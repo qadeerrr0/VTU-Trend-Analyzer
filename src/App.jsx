@@ -507,11 +507,11 @@ export default function App() {
 
 
 
-            <div className="form-card">
-              <div className="card-header">
-                <Upload size={22} className="card-icon" />
-                <span>Upload PDF</span>
-              </div>
+            <div className="form-card" style={{ gridColumn: '1 / -1' }}>
+  <div className="card-header">
+    <Upload size={22} className="card-icon" />
+    <span>Upload PDF</span>
+  </div>
               <label
                 className={`upload-zone ${isDragging ? 'drag-active' : ''}`}
                 onDragOver={(e) => {
