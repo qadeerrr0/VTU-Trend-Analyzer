@@ -9,7 +9,6 @@ import {
   Home,
   CloudUpload,
   BookOpen,
-  Calendar,
   Upload,
   FileText,
   BarChart2,
@@ -204,7 +203,6 @@ export default function App() {
 
   const [semester, setSemester] = useState('1st Semester');
   const [subject, setSubject] = useState(SUBJECT_NAMES[0]);
-  const [examYear, setExamYear] = useState('2025');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [reportData, setReportData] = useState(null);
@@ -234,7 +232,7 @@ export default function App() {
   };
 
   const handleUseSamplePaper = () => {
-    const sampleName = `${subject.replace(/[^a-zA-Z0-9]+/g, '_')}_VTU_${examYear}_QP.pdf`;
+    const sampleName = `${subject.replace(/[^a-zA-Z0-9]+/g, '_')}_VTU_QP.pdf`;
     setSelectedFile({
       name: sampleName,
       size: 1480240,
@@ -248,12 +246,11 @@ export default function App() {
       PRACTICE_QUESTIONS[subject] || PRACTICE_QUESTIONS[SUBJECT_NAMES[0]];
     const sourceLabel = selectedFile
       ? selectedFile.name
-      : `${subject.replace(/[^a-zA-Z0-9]+/g, '_')}_VTU_${examYear}_Archive.pdf`;
+      : `${subject.replace(/[^a-zA-Z0-9]+/g, '_')}_VTU_Archive.pdf`;
 
     setReportData({
       semester,
       subject,
-      examYear,
       sourceLabel,
       topics,
       questions
@@ -507,23 +504,8 @@ export default function App() {
               </select>
             </div>
 
-            <div className="form-card">
-              <div className="card-header">
-                <Calendar size={22} className="card-icon" />
-                <span>Select Exam Year</span>
-              </div>
-              <select
-                className="custom-select"
-                value={examYear}
-                onChange={(e) => setExamYear(e.target.value)}
-              >
-                <option>2025</option>
-                <option>2024</option>
-                <option>2023</option>
-                <option>2022</option>
-                <option>2021</option>
-              </select>
-            </div>
+
+
 
             <div className="form-card">
               <div className="card-header">
@@ -596,8 +578,7 @@ export default function App() {
                         marginTop: '4px'
                       }}
                     >
-                      {reportData.semester} • Exam Year: {reportData.examYear} •
-                      Source: {reportData.sourceLabel}
+                      {reportData.semester} • Source: {reportData.sourceLabel}
                     </p>
                   </div>
                   <span className="report-badge">
@@ -722,8 +703,7 @@ export default function App() {
               <GraduationCap size={26} color="#1d63dc" />
               <h3>1. Choose Semester & Subject</h3>
               <p>
-                Select any semester from 1st to 8th, choose your subject, and
-                pick the exam year.
+                Select any semester from 1st to 8th and choose your subject.
               </p>
             </div>
             <div className="info-card">
