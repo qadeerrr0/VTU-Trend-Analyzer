@@ -436,7 +436,7 @@ body {
   margin-bottom: 24px;
 }
 
-/* 3-Column Top Selection Row (Department + Semester + Subject) & 2-Column Bottom Row */
+/* 3-Column Selection Row (Department + Semester + Subject) */
 .form-grid-top {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -445,10 +445,8 @@ body {
   margin-bottom: 16px;
 }
 
-.form-grid-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 16px;
+/* Full-width Upload PDF Row */
+.form-grid-upload {
   text-align: left;
   margin-bottom: 24px;
 }
@@ -513,7 +511,7 @@ body {
   border: 2px dashed #60a5fa;
   border-radius: 12px;
   background: #f8fafc;
-  padding: 12px;
+  padding: 16px;
   text-align: center;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
@@ -530,7 +528,7 @@ body {
 }
 
 .upload-zone p {
-  font-size: 0.83rem;
+  font-size: 0.86rem;
   color: var(--navy-dark);
   font-weight: 500;
   word-break: break-word;
@@ -701,8 +699,7 @@ body {
   .hero-subtitle {
     margin: 0 auto 24px;
   }
-  .form-grid-top,
-  .form-grid-bottom {
+  .form-grid-top {
     grid-template-columns: 1fr;
   }
   .nav-links {
