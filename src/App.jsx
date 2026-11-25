@@ -682,6 +682,7 @@ function buildSubjectAnalysis(department, semester, subject) {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [selectedScheme, setSelectedScheme] = useState('2022');
 
   const [department, setDepartment] = useState(DEPARTMENTS[0]);
   const [semester, setSemester] = useState('1st Semester');
@@ -692,18 +693,36 @@ export default function App() {
   const [isDragging, setIsDragging] = useState(false);
   const [reportData, setReportData] = useState(null);
 
-  const availableSubjects = VTU_CURRICULUM[department]?.[semester] || [];
+  // The current subject database contains the VTU 2022 Scheme only.
+  // Keep 2025 selectable, but do not show 2022 subjects under that scheme.
+  const availableSubjects =
+    selectedScheme === '2022'
+      ? VTU_CURRICULUM[department]?.[semester] || []
+      : [];
+
+  const handleSchemeChange = (newScheme) => {
+    setSelectedScheme(newScheme);
+    setSubject(newScheme === '2022'
+      ? VTU_CURRICULUM[department]?.[semester]?.[0] || ''
+      : '');
+    setSelectedFile(null);
+    setReportData(null);
+  };
 
   const handleDepartmentChange = (newDept) => {
     setDepartment(newDept);
-    const nextList = VTU_CURRICULUM[newDept]?.[semester] || [];
+    const nextList = selectedScheme === '2022'
+      ? VTU_CURRICULUM[newDept]?.[semester] || []
+      : [];
     setSubject(nextList[0] || '');
     setReportData(null);
   };
 
   const handleSemesterChange = (newSem) => {
     setSemester(newSem);
-    const nextList = VTU_CURRICULUM[department]?.[newSem] || [];
+    const nextList = selectedScheme === '2022'
+      ? VTU_CURRICULUM[department]?.[newSem] || []
+      : [];
     setSubject(nextList[0] || '');
     setReportData(null);
   };
@@ -743,6 +762,9 @@ export default function App() {
   };
 
   const handleAnalyzeSubmit = () => {
+    // Analysis is enabled only when the selected scheme has mapped subjects.
+    if (!subject || availableSubjects.length === 0) return;
+
     const analysis = buildSubjectAnalysis(department, semester, subject);
     const codePart = subject.split(' - ')[0].replace(/[^a-zA-Z0-9]+/g, '_');
     const sourceLabel = selectedFile
@@ -750,6 +772,7 @@ export default function App() {
       : `${codePart}_VTU_PYQ_Archive.pdf`;
 
     setReportData({
+      scheme: selectedScheme,
       department,
       semester,
       subject,
@@ -965,12 +988,15 @@ export default function App() {
             Analyze Your <span>Question Paper</span>
           </h1>
           <p className="analyze-subtitle">
-            Select your B.E. department, semester (1st–8th), and VTU subject to
-            analyze trends or upload a PDF paper.
+            Select your B.E. department, VTU scheme, semester (1st–8th), and
+            subject to analyze trends or upload a PDF paper.
           </p>
 
-          {/* Row 1: Department + Semester + Filtered Subject */}
-          <div className="form-grid-top">
+          {/* Row 1: Department + Scheme + Semester + Filtered Subject */}
+          <div
+            className="form-grid-top"
+            style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(235px, 1fr))' }}
+          >
             <div className="form-card">
               <div className="card-header">
                 <div className="card-header-left">
@@ -988,6 +1014,24 @@ export default function App() {
                     {dept}
                   </option>
                 ))}
+              </select>
+            </div>
+
+            {/* Scheme Selection */}
+            <div className="form-card">
+              <div className="card-header">
+                <div className="card-header-left">
+                  <Layers size={20} className="card-icon" />
+                  <span>Select Scheme</span>
+                </div>
+              </div>
+              <select
+                className="custom-select"
+                value={selectedScheme}
+                onChange={(e) => handleSchemeChange(e.target.value)}
+              >
+                <option value="2022">2022 Scheme</option>
+                <option value="2025">2025 Scheme</option>
               </select>
             </div>
 
@@ -1022,16 +1066,32 @@ export default function App() {
               <select
                 className="custom-select"
                 value={subject}
+                disabled={availableSubjects.length === 0}
                 onChange={(e) => setSubject(e.target.value)}
               >
-                {availableSubjects.map((subj) => (
-                  <option key={subj} value={subj}>
-                    {subj}
-                  </option>
-                ))}
+                {availableSubjects.length === 0 ? (
+                  <option value="">No subjects available for this scheme yet</option>
+                ) : (
+                  availableSubjects.map((subj) => (
+                    <option key={subj} value={subj}>
+                      {subj}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
           </div>
+
+          {selectedScheme === '2025' && (
+            <div className="form-card" style={{ marginTop: '16px' }}>
+              <p style={{ color: '#b45309', margin: 0, lineHeight: 1.5 }}>
+                2025 Scheme is selected. The 2025 department-wise and
+                semester-wise subject curriculum has not been added to the
+                project yet. Please select 2022 Scheme to use the currently
+                available subject list and analysis.
+              </p>
+            </div>
+          )}
 
           {/* Row 2: Upload PDF */}
           <div className="form-grid-upload">
@@ -1072,6 +1132,7 @@ export default function App() {
               type="button"
               className="btn-primary"
               onClick={handleAnalyzeSubmit}
+              disabled={!subject || availableSubjects.length === 0}
             >
               <BarChart2 size={18} /> Analyze Paper <ArrowRight size={18} />
             </button>
@@ -1108,8 +1169,8 @@ export default function App() {
                         marginTop: '4px'
                       }}
                     >
-                      {reportData.department} • {reportData.semester} • Source:{' '}
-                      {reportData.sourceLabel}
+                      VTU {reportData.scheme} Scheme • {reportData.department} •{' '}
+                      {reportData.semester} • Source: {reportData.sourceLabel}
                     </p>
                   </div>
                   <span className="report-badge">
