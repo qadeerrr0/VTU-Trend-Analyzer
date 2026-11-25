@@ -9,7 +9,6 @@ import {
   Home,
   CloudUpload,
   BookOpen,
-  Calendar,
   Upload,
   FileText,
   BarChart2,
@@ -646,10 +645,10 @@ function buildSubjectAnalysis(department, semester, subject) {
   return {
     topics: [
       { topic: `${cleanTitle}: Fundamental Laws, Governing Equations & Derivations`, weight: 92, repeated: '6 of last 7 exams' },
-      { topic: `Module 2 Core Design & Analytical Numerical Problems`, weight: 88, repeated: '6 of last 7 exams' },
-      { topic: `System Architecture, Circuit / Structural / Process Block Analysis`, weight: 84, repeated: '5 of last 7 exams' },
-      { topic: `Performance Characteristics, Efficiency & Testing Standards`, weight: 80, repeated: '5 of last 7 exams' },
-      { topic: `Comparative Methods, Limitations & Industrial Applications`, weight: 76, repeated: '4 of last 7 exams' },
+      { topic: 'Module 2 Core Design & Analytical Numerical Problems', weight: 88, repeated: '6 of last 7 exams' },
+      { topic: 'System Architecture, Circuit / Structural / Process Block Analysis', weight: 84, repeated: '5 of last 7 exams' },
+      { topic: 'Performance Characteristics, Efficiency & Testing Standards', weight: 80, repeated: '5 of last 7 exams' },
+      { topic: 'Comparative Methods, Limitations & Industrial Applications', weight: 76, repeated: '4 of last 7 exams' },
       { topic: `Modern Engineering Tools, Simulation & Case Studies (${department.split(' ')[0]})`, weight: 72, repeated: '4 of last 7 exams' }
     ],
     questions: [
@@ -689,7 +688,6 @@ export default function App() {
   const [subject, setSubject] = useState(
     VTU_CURRICULUM[DEPARTMENTS[0]]['1st Semester'][0]
   );
-  const [examYear, setExamYear] = useState('2025');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [reportData, setReportData] = useState(null);
@@ -736,7 +734,7 @@ export default function App() {
 
   const handleUseSamplePaper = () => {
     const codePart = subject.split(' - ')[0].replace(/[^a-zA-Z0-9]+/g, '_');
-    const sampleName = `${codePart}_VTU_${examYear}_QP.pdf`;
+    const sampleName = `${codePart}_VTU_PYQ_Archive.pdf`;
     setSelectedFile({
       name: sampleName,
       size: 1480240,
@@ -749,13 +747,12 @@ export default function App() {
     const codePart = subject.split(' - ')[0].replace(/[^a-zA-Z0-9]+/g, '_');
     const sourceLabel = selectedFile
       ? selectedFile.name
-      : `${codePart}_VTU_${examYear}_Archive.pdf`;
+      : `${codePart}_VTU_PYQ_Archive.pdf`;
 
     setReportData({
       department,
       semester,
       subject,
-      examYear,
       sourceLabel,
       topics: analysis.topics,
       questions: analysis.questions
@@ -1036,28 +1033,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Row 2: Exam Year + Upload PDF */}
-          <div className="form-grid-bottom">
-            <div className="form-card">
-              <div className="card-header">
-                <div className="card-header-left">
-                  <Calendar size={20} className="card-icon" />
-                  <span>Select Exam Year</span>
-                </div>
-              </div>
-              <select
-                className="custom-select"
-                value={examYear}
-                onChange={(e) => setExamYear(e.target.value)}
-              >
-                <option>2025</option>
-                <option>2024</option>
-                <option>2023</option>
-                <option>2022</option>
-                <option>2021</option>
-              </select>
-            </div>
-
+          {/* Row 2: Upload PDF */}
+          <div className="form-grid-upload">
             <div className="form-card">
               <div className="card-header">
                 <div className="card-header-left">
@@ -1131,8 +1108,8 @@ export default function App() {
                         marginTop: '4px'
                       }}
                     >
-                      {reportData.department} • {reportData.semester} • Exam
-                      Year: {reportData.examYear} • Source: {reportData.sourceLabel}
+                      {reportData.department} • {reportData.semester} • Source:{' '}
+                      {reportData.sourceLabel}
                     </p>
                   </div>
                   <span className="report-badge">
